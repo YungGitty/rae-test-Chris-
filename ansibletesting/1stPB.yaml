@@ -1,0 +1,37 @@
+---
+
+- name: My First playbook
+  gather_facts: false
+  hosts: all
+  tasks:
+
+    - name: Push
+      copy:
+        src: /etc/httpd/conf/httpd.conf
+        dest: /tmp
+
+    - name: stype=jump
+      hosts: localhosts 
+      vars:
+        http_port: "3030"
+
+     - name: stype=local
+       hosts: rae
+       vars:
+         ssh_port: 2020
+
+     - name: Get uptime information
+       ansible.builtin.shell: /usr/bin/uname
+       register: result
+
+     - name: Print return information from the previous task
+       ansible.builtin.debug:
+       var: result
+       verbosity: 2
+      
+     - name: Compress directory /tmp into /root/chriswashere.tar
+       community.general.archive:
+       path: /tmp
+       dest: /root/chriswashere.tar
+       vars:
+         stype: service
